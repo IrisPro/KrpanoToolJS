@@ -1,0 +1,26 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    font-family: monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-wrapper {
+    background-color: #000000;
+    padding: 20px 30px;
+    border: 1px solid #FFFFFF;
+    font-size: 16px;
+}
+
+.input-wrapper > input {
+    font-size: 16px;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
