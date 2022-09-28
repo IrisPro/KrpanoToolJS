@@ -1,7 +1,7 @@
 {
     "name": "@krpano/js-tools",
-    "version": "1.0.5",
-    "description": "pano to cube, pano to tiles, cube to tiles, tiles to cube, tiles to cube，全景切图，krpano切图",
+    "version": "1.0.9",
+    "description": "在浏览器切图和还原全景图，KrpanoTools的轻量替代品",
     "author": "Rain",
     "license": "MIT",
     "entry": "src/index.ts",
@@ -10,6 +10,10 @@
     "iife": "dist/iife/index.js",
     "cjs": "dist/cjs/index.js",
     "types": "dist/types/index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/IrisPro/KrpanoToolJS.git"
+    },
     "scripts": {
         "build": "npm-run-all --parallel build:**",
         "build:all": "rollup --config",
@@ -20,6 +24,16 @@
         "prepack": "npm-run-all build",
         "release": "npm version patch && npm publish --access public"
     },
+    "keywords": [
+        "krpano",
+        "makepano",
+        "maketiles",
+        "makepreview",
+        "全景图",
+        "js切图",
+        "瓦片图",
+        "还原全景图"
+    ],
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
