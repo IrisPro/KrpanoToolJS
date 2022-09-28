@@ -96,3 +96,6 @@ makeCubeAndTiles(file: File): Promise<IConvertPanoResult>;
 1. 在浏览器爬取图片
 2. **还原全景图**
 
+
+## 特别鸣谢
+> jaxry https://github.com/jaxry
