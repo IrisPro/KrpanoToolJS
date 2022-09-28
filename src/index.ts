@@ -15,6 +15,7 @@ enum ESplitImageType {
 interface IConvertPanoResult {
     dirName: string;
     content: Blob;
+    duration: string | number;
     code: {
         scene: string;
         cubeImage: string;
@@ -29,7 +30,13 @@ export default class KrpanoToolJS {
         console.log('constructor KrpanoJSTool')
     }
 
-    private splitImage(file: File, type: ESplitImageType): Promise<IConvertPanoResult> {
+    private async splitImage(file: File, type: ESplitImageType): Promise<IConvertPanoResult> {
+
+        const checkResult = await this.checkFile(file)
+        if (checkResult !== true) {
+            return Promise.reject(checkResult)
+        }
+
         const title = file.name.substr(0, file.name.lastIndexOf('.'))
         let tilesLevelConfig: ILevelConfig[] = null
 
@@ -51,6 +58,7 @@ export default class KrpanoToolJS {
             const result: IConvertPanoResult = {
                 dirName: dirName,
                 content: null,
+                duration: 0,
                 code: {
                     scene: '',
                     cubeImage: '',
@@ -123,9 +131,6 @@ export default class KrpanoToolJS {
 
                 }
 
-                // for test
-                // folder.file('tour.xml', getKrpanoXml(result.code.scene))
-
                 setTimeout(function () {
                     zip
                         .generateAsync({
@@ -133,9 +138,8 @@ export default class KrpanoToolJS {
                         })
                         .then(content => {
                             result.content = content
+                            result.duration = getTimeDifference(startTime, new Date())
                             resolve(result)
-                            console.log('耗时', getTimeDifference(startTime, new Date()))
-                            // FileSaver.saveAs(content)
                         })
                 }, 20)
             })
@@ -154,8 +158,23 @@ export default class KrpanoToolJS {
         return this.splitImage(file, ESplitImageType.all)
     }
 
-    public checkPanoImage() {
-        console.log('checkPanoImage')
+    public checkFile(file: File) {
+        return new Promise((resolve, reject) => {
+            if (file.type !== 'image/jpeg') {
+                reject('仅支持jpeg或jpg图片')
+            }
+            const url = window.URL || window.webkitURL
+            const img = new Image()
+            img.src = url.createObjectURL(file)
+            img.onload = function () {
+                if (img.width > 20000) {
+                    img.remove()
+                    reject('图片需要小于20000*10000')
+                } else {
+                    resolve(true)
+                }
+            }
+        })
     }
 
     public tilesToCube() {

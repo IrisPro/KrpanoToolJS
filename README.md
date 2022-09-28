@@ -2,15 +2,26 @@
 
 ---
 
-## 介绍：一款能在浏览器使用的高性能的krpano Tools，使用JavaScript切图、还原全景图等
+## 介绍：在浏览器中切图和还原全景图，替代krpano命令行工具
 
 
 ## 一、功能介绍
 
 ---
-### 在浏览器中将全景图转为立方体图、瓦片图
+### 在浏览器中将全景图转为立方体图、多层级瓦片图
+
+备注：
+
+---
 
 * 切图的逻辑、缩略图、预览图均以krpano为标准，如果是使用krpano来开发全景的，可以直接使用，暂时未开发自定义切图的参数，后续可能会开放。
+* 目前仅支持**jpeg/jpg**，**20000x10000**分辨率以内的图片，当然这已经是覆盖了80%的使用场景了
+* 切图速度快于krpano命令行工具
+* 如果需要更高的要求还是可以使用krpano工具，也可以混着使用
+
+如下功能：
+
+---
 
 1. 生成立方体图片（6个面）
 2. 生成多分辨率瓦片图（层级根据图片分辨率自动调节）
@@ -28,7 +39,7 @@
 npm i @krpano/js-tools
 ```
 
-### 切图，example in Vue：
+### 切图，示例：在vue中的使用：
 ```vue
 <template>
     <input type="file" name="test" accept="image/jpeg,image/png">
@@ -65,6 +76,7 @@ export default {
 interface IConvertPanoResult {
     dirName: string;  // 生成根目录文件夹名称
     content: Blob; // 场景图片、缩略图、预览图 的Blob文件，可以用于上传到后台或者下载到本地
+    duration: string | number; // 单次切图时长
     code: {  // 代码
         scene: string;  // 整个场景的代码
         cubeImage: string; // 立方体切图image节点的代码
@@ -86,7 +98,7 @@ makeTiles(file: File): Promise<IConvertPanoResult>;
 makeCubeAndTiles(file: File): Promise<IConvertPanoResult>;
 ```
 
-## 三、迭代计划（敬请期待）
+## 三、还原全景图（敬请期待）
 
 ---
 
