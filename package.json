@@ -1,6 +1,6 @@
 {
     "name": "@krpano/js-tools",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "pano to cube, pano to tiles, cube to tiles, tiles to cube, tiles to cube，全景切图，krpano切图",
     "author": "Rain",
     "license": "MIT",
