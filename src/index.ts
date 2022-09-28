@@ -69,7 +69,6 @@ export default class KrpanoToolJS {
             const panoToCube = new PanoToCube(file)
             panoToCube.genCubeDatasAsync().then(async data => {
 
-                console.log('data', data)
                 // 生成预览图：preview.jpg
                 folder.file('preview.jpg', removeBase64Header(panoToCube.generatePreviewImage()), {base64: true})
 
@@ -101,7 +100,6 @@ export default class KrpanoToolJS {
                         if (!tilesLevelConfig) {
                             tilesLevelConfig = makeTileTool.levelConfig
                         }
-                        console.log('tiles', tiles)
                         tiles.forEach(itemTile => {
                             folder.file(itemTile.path, removeBase64Header(itemTile.base64), {base64: true})
                         })
