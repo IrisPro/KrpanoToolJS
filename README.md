@@ -35,7 +35,7 @@ npm i @krpano/js-tools
 ### 切图，示例：在vue中的使用：
 ```vue
 <template>
-    <input type="file" name="test" accept="image/jpeg,image/png">
+    <input type="file" name="test" @change="onFileChange" accept="image/jpeg,image/png">
 </template>
 
 <script>
