@@ -6,12 +6,21 @@ import MakeTiles, {EInputDataType, ILevelConfig, IOptions, TTilesList} from './m
 import {getTimeDifference, getUniqueId, removeBase64Header} from './utils/utils'
 import {EImageType, getImageXml, getSceneXml} from './modules/genKrpanoCode'
 
+/**
+ * ESplitImageType：图片切图类型
+ * cube：立方体（普通切图）
+ * tiles：多分辨率（高清切图）
+ * all：以上两种同时生成
+ */
 export enum ESplitImageType {
     cube = 'cube',
     tiles = 'tiles',
     all = 'all',
 }
 
+/**
+ * 切图返回的结果
+ */
 export interface IConvertPanoResult {
     dirName: string;
     content: Blob | null;
@@ -24,13 +33,18 @@ export interface IConvertPanoResult {
     };
 }
 
+/**
+ * KrpanoToolJS工具，可在浏览器切图和还原图片
+ */
 export default class KrpanoToolJS {
 
     constructor() {
         console.log('constructor KrpanoJSTool')
     }
 
-    private async splitImage(file: File, type: ESplitImageType): Promise<unknown> {
+    [key: string]: Function
+
+    private async splitImage(file: File, type: ESplitImageType): Promise<IConvertPanoResult> {
 
         const checkResult = await this.checkFile(file)
         if (checkResult !== true) {
@@ -144,19 +158,35 @@ export default class KrpanoToolJS {
         })
     }
 
+    /**
+     * 生成立方体图（普通切图）
+     * @param file input file
+     */
     public makeCube(file: File) {
         return this.splitImage(file, ESplitImageType.cube)
     }
 
+    /**
+     * 多分辨率切图
+     * @param file input file
+     */
     public makeTiles(file: File) {
         return this.splitImage(file, ESplitImageType.tiles)
     }
 
+    /**
+     * 同时生成立方体和多分辨率切图
+     * @param file input file
+     */
     public makeCubeAndTiles(file: File) {
         return this.splitImage(file, ESplitImageType.all)
     }
 
-    public checkFile(file: File) {
+    /**
+     * 检测图片是否符合(jpg,小于2万px)
+     * @param file
+     */
+    public checkFile(file: File): Promise<boolean | string> {
         return new Promise((resolve, reject) => {
             if (file.type !== 'image/jpeg') {
                 reject('仅支持jpeg或jpg图片')
@@ -175,12 +205,17 @@ export default class KrpanoToolJS {
         })
     }
 
+    /**
+     * 多分辨率转为立方体图（敬请期待）
+     */
     public tilesToCube() {
-        console.log('tilesToCube')
+        console.log('敬请期待-tilesToCube')
     }
-
+    /**
+     * 立方体图转为全景图（敬请期待）
+     */
     public cubeToPano() {
-        console.log('cubeToPano')
+        console.log('敬请期待-cubeToPano')
     }
 }
 
