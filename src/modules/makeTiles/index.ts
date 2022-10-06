@@ -30,7 +30,7 @@ export default class MakeTiles {
     readonly maxTileSize = 512
 
     private imageFile: File | undefined
-    private imageData: ImageData = new ImageData(0,0)
+    private imageData: ImageData
     private panoWidth: number = 0
     private imageWidth: number = 0
     private imageHeight: number = 0
