@@ -29,8 +29,8 @@ export default class MakeTiles {
     public levelConfig: ILevelConfig[] = []
     readonly maxTileSize = 512
 
-    private imageFile: File
-    private imageData: ImageData
+    private imageFile: File | undefined
+    private imageData: ImageData = new ImageData(0,0)
     private panoWidth: number = 0
     private imageWidth: number = 0
     private imageHeight: number = 0
@@ -61,7 +61,7 @@ export default class MakeTiles {
             img.src = URL.createObjectURL(this.imageFile)
             img.onload = () => {
                 const canvas = document.createElement('canvas') as HTMLCanvasElement
-                const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
+                const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
                 const {width, height} = img
                 this.imageWidth = width
                 this.imageHeight = height
@@ -103,7 +103,7 @@ export default class MakeTiles {
             return inputLevelSize
         }
 
-        function getLevelConfig(panoSize): ILevelConfig[] {
+        function getLevelConfig(panoSize: number): ILevelConfig[] {
             let count = 1
             let levels = []
             const minFaceSize = 640
@@ -118,7 +118,7 @@ export default class MakeTiles {
             getNextLevelConfig(topLevelSize)
 
             // 递归获取子层级
-            function getNextLevelConfig(topLevelSize) {
+            function getNextLevelConfig(topLevelSize: number) {
                 const space = 2
                 const nextLevelSize = topLevelSize / space
                 if (nextLevelSize + minTileSize >= minFaceSize) {
@@ -145,7 +145,7 @@ export default class MakeTiles {
 
     }
 
-    generateAsync(): Promise<TTilesList> {
+    public generateAsync(): Promise<TTilesList> {
         return new Promise(resolve => {
             if (this.inputDataType === EInputDataType.file) {
                 this.loadImage().then(() => {
@@ -157,9 +157,9 @@ export default class MakeTiles {
         })
     }
 
-    generate(): TTilesList {
+    public generate(): TTilesList {
         const tempCanvas = document.createElement('canvas') as HTMLCanvasElement
-        const tempCtx = tempCanvas.getContext('2d')
+        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D
 
         this.levelConfig.forEach(level => {
             const rows: number = Math.ceil(level.size / this.maxTileSize)
@@ -180,7 +180,7 @@ export default class MakeTiles {
                     const lastColFlat = lastColHeight && col === cols - 1
 
                     const tilesCanvas = document.createElement('canvas') as HTMLCanvasElement
-                    const tilesCtx = tilesCanvas.getContext('2d')
+                    const tilesCtx = tilesCanvas.getContext('2d') as CanvasRenderingContext2D
                     const sx = row * this.maxTileSize
                     const sy = col * this.maxTileSize
                     const sw = lastRowFlat ? lastRowWdith : this.maxTileSize
@@ -213,7 +213,7 @@ export default class MakeTiles {
         return this.tiles
     }
 
-    generateThumbAsync(width = 240, height = 240) {
+    public generateThumbAsync(width = 240, height = 240) {
         return new Promise(resolve => {
             this.loadImage().then(() => {
                 resolve(this.generateThumb(width, height))
@@ -221,9 +221,9 @@ export default class MakeTiles {
         })
     }
 
-    generateThumb(width = 240, height = 240) {
+    public generateThumb(width = 240, height = 240) {
         const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
         canvas.width = this.imageWidth
         canvas.height = this.imageHeight
         ctx.putImageData(this.imageData, 0, 0)
@@ -231,7 +231,7 @@ export default class MakeTiles {
         ctx.drawImage(canvas, 0, 0)
 
         const tempCavans = document.createElement('canvas') as HTMLCanvasElement
-        const tempCtx: CanvasRenderingContext2D = tempCavans.getContext('2d')
+        const tempCtx = tempCavans.getContext('2d') as CanvasRenderingContext2D
         tempCavans.width = width
         tempCavans.height = height
         tempCtx.putImageData(ctx.getImageData(0, 0, width, height), 0, 0)

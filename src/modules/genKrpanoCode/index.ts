@@ -6,7 +6,7 @@ export enum EImageType {
     shortTiles,
 }
 
-export function getKrpanoXml(sceneXml) {
+export function getKrpanoXml(sceneXml: string) {
     let xml = '<krpano version="1.20.10" title="Virtual Tour">'
     xml += '<include url="skin/vtourskin.xml" />'
     xml += sceneXml
@@ -14,7 +14,7 @@ export function getKrpanoXml(sceneXml) {
     return xml
 }
 
-export function getSceneXml(params): string {
+export function getSceneXml(params: any): string {
     const {title, dirName, sceneName, type, levelConfig} = params
     let xml = `<scene name="${sceneName}" title="${title}" onstart="" thumburl="panos/${dirName}/thumb.jpg" lat="" lng="" heading="">
 
@@ -60,6 +60,7 @@ export function getTilesXml(dirName: string, isShort: boolean = false, levelConf
     let xml = ''
     if (isShort) {
         const multires = [512]
+        if (!levelConfig) return ''
         levelConfig.reverse().forEach(level => {
             multires.push(level.size)
         })

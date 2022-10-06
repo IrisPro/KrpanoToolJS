@@ -13,9 +13,9 @@ export interface ICubeImage {
 }
 
 export default class PanoToCube {
-    private imageFile: File
+    private imageFile: File | undefined
     public canvas: HTMLCanvasElement = document.createElement('canvas')
-    private ctx: CanvasRenderingContext2D = this.canvas.getContext('2d')
+    private ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D
     private workers: Worker[] = []
     private finishedCount: number = 0
     static interpolation = {
@@ -25,7 +25,7 @@ export default class PanoToCube {
     }
 
     public faceDatas: IFaceData[] = []
-    public callbackFunc: Function
+    public callbackFunc: Function | undefined
 
     constructor(imageFile?: File) {
         this.imageFile = imageFile
@@ -90,7 +90,7 @@ export default class PanoToCube {
             })
 
             if (this.finishedCount === 6) {
-                this.callbackFunc(this.faceDatas)
+                this.callbackFunc && this.callbackFunc(this.faceDatas)
             }
         }
     }
@@ -101,7 +101,7 @@ export default class PanoToCube {
      */
     genCubeImages(size = 2048): ICubeImage[] {
         const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
         canvas.width = size
         canvas.height = size
         const cubeImages: ICubeImage[] = []
@@ -125,7 +125,7 @@ export default class PanoToCube {
      */
     generateThumb(faceName: string = 'f', size: number = 240, isBlur: boolean = true) {
         const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
         canvas.width = size
         canvas.height = size
         let imageData = scaleImageData(this.faceDatas.find(item => item.name === faceName).data, size, size)
@@ -150,7 +150,7 @@ export default class PanoToCube {
         const cubeSize = 256
         const faceNames: string[] = ['l', 'f', 'r', 'b', 'u', 'd']
         const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx: CanvasRenderingContext2D = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
         canvas.width = cubeSize
         canvas.height = cubeSize * faceNames.length
 

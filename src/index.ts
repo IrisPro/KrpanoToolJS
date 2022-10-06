@@ -6,15 +6,15 @@ import MakeTiles, {EInputDataType, ILevelConfig, IOptions, TTilesList} from './m
 import {getTimeDifference, getUniqueId, removeBase64Header} from './utils/utils'
 import {EImageType, getImageXml, getSceneXml} from './modules/genKrpanoCode'
 
-enum ESplitImageType {
+export enum ESplitImageType {
     cube = 'cube',
     tiles = 'tiles',
     all = 'all',
 }
 
-interface IConvertPanoResult {
+export interface IConvertPanoResult {
     dirName: string;
-    content: Blob;
+    content: Blob | null;
     duration: string | number;
     code: {
         scene: string;
@@ -30,7 +30,7 @@ export default class KrpanoToolJS {
         console.log('constructor KrpanoJSTool')
     }
 
-    private async splitImage(file: File, type: ESplitImageType): Promise<IConvertPanoResult> {
+    private async splitImage(file: File, type: ESplitImageType): Promise<unknown> {
 
         const checkResult = await this.checkFile(file)
         if (checkResult !== true) {
@@ -38,7 +38,7 @@ export default class KrpanoToolJS {
         }
 
         const title = file.name.substr(0, file.name.lastIndexOf('.'))
-        let tilesLevelConfig: ILevelConfig[] = null
+        let tilesLevelConfig: ILevelConfig[]
 
         /**
          * 1、单个场景文件夹名称：文件名转为拼音 + '_' + 随机数
@@ -54,7 +54,7 @@ export default class KrpanoToolJS {
 
         return new Promise(resolve => {
             const zip = new JSZip()
-            const folder = zip.folder(`${dirName}`)
+            const folder = zip.folder(`${dirName}`) as JSZip
             const result: IConvertPanoResult = {
                 dirName: dirName,
                 content: null,
