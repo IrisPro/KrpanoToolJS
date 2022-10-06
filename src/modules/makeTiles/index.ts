@@ -137,7 +137,6 @@ export default class MakeTiles {
                 return item
             })
 
-            console.log('层级：', count, levels)
             return levels
         }
 
