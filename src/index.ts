@@ -1,5 +1,4 @@
 import JSZip from 'jszip'
-import {pinyin} from 'pinyin-pro'
 
 import PanoToCube, {ICubeImage} from './modules/panoToCube/panoToCube'
 import MakeTiles, {EInputDataType, ILevelConfig, IOptions, TTilesList} from './modules/makeTiles'
@@ -58,7 +57,7 @@ export default class KrpanoToolJS {
          * 1、单个场景文件夹名称：文件名转为拼音 + '_' + 随机数
          * 2、krpano不支持大写，统一转为小写
          */
-        const pinyinName = pinyin(title, {toneType: 'none'}).toLocaleLowerCase().replace(/\s+/g, '') + '_' + getUniqueId(5)
+        const pinyinName = 'pano_' + getUniqueId(8)
 
         // 场景名称不能以数字开头
         const sceneName = 'scene_' + pinyinName
