@@ -8,6 +8,8 @@ const sourceMaps = require('rollup-plugin-sourcemaps');
 const workerLoader = require('rollup-plugin-web-worker-loader');
 const pkg = require('./package.json');
 import {terser} from 'rollup-plugin-terser';
+import babel from '@rollup/plugin-babel'
+import { DEFAULT_EXTENSIONS } from '@babel/core'
 
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx',
@@ -52,11 +54,28 @@ if (process.env.TARGET === 'debug') {
     /* ESNext */
     config.push({
         input: [path.resolve(__dirname, pkg.entry)],
-        output: {
-            file: path.resolve(__dirname, pkg['module']),
-            format: 'esm',
-            sourcemap: false,
-        },
+        output: [
+            // esm
+            {
+                file: path.resolve(__dirname, pkg['module']),
+                format: 'es',
+            },
+            // cjs
+            {
+                file: path.resolve(__dirname, pkg['main']),
+                format: 'cjs',
+            },
+            // umd
+            {
+                name: 'KrpanoTool',
+                file: path.resolve(__dirname, pkg['umd'])
+            },
+            // iife
+            {
+                name: 'KrpanoTool',
+                file: path.resolve(__dirname, pkg['iife'])
+            }
+        ],
         plugins: [
             resolve({
                 extensions,
@@ -64,11 +83,22 @@ if (process.env.TARGET === 'debug') {
                 preferBuiltins: true,
             }),
             commonjs(),
-            workerLoader(),
             typescript({
                 typescript: require('typescript'),
                 cacheRoot: path.resolve(__dirname, '.rts2_cache'),
                 clean: true,
+            }),
+            workerLoader(),
+            babel({
+                babelHelpers: 'runtime',
+                exclude: [
+                    'node_modules/**',
+                    'src/modules/panoToCube/panoToCubeWorker.js'
+                ],
+                extensions: [
+                    ...DEFAULT_EXTENSIONS,
+                    '.ts',
+                ],
             }),
             terser(),
             sourceMaps(),

@@ -5,18 +5,20 @@
     "author": "Rain",
     "license": "MIT",
     "entry": "src/index.ts",
-    "main": "dist/next/index.js",
-    "module": "dist/next/index.js",
-    "iife": "dist/iife/index.js",
-    "cjs": "dist/cjs/index.js",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "iife": "dist/index.iife.js",
+    "cjs": "dist/index.cjs.js",
+    "umd": "dist/index.umd.js",
     "types": "dist/types/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/IrisPro/KrpanoToolJS.git"
     },
     "scripts": {
-        "build": "npm-run-all --parallel build:**",
+        "build": "npm run clean:dist && npm-run-all --parallel build:**",
         "build:all": "rollup --config",
+        "clean:dist": "rimraf dist",
         "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir ./dist/types",
         "start": "cross-env TARGET='debug' rollup --config --watch",
         "watch": "rollup --config --watch",
@@ -35,6 +37,10 @@
         "还原全景图"
     ],
     "devDependencies": {
+        "@babel/core": "^7.19.6",
+        "@babel/plugin-transform-runtime": "^7.19.6",
+        "@babel/preset-env": "^7.19.4",
+        "@rollup/plugin-babel": "^6.0.2",
         "@typescript-eslint/eslint-plugin": "^2.33.0",
         "@typescript-eslint/parser": "^2.33.0",
         "cross-env": "^7.0.2",
@@ -45,6 +51,7 @@
         "rollup-plugin-live-server": "^1.0.3",
         "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-sourcemaps": "^0.6.2",
+        "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.27.1",
         "rollup-plugin-web-worker-loader": "^1.3.0",
         "tslib": "^1.12.0",
@@ -54,6 +61,6 @@
         "file-saver": "^2.0.5",
         "jszip": "^3.10.0",
         "jszip-utils": "^0.1.0",
-        "rollup-plugin-terser": "^7.0.2"
+        "rimraf": "^3.0.2"
     }
 }
