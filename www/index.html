@@ -9,13 +9,26 @@
 <body>
 <div class="input-wrapper">
     <span style="color: #FFFFFF">上传全景图</span>
-    <input id="imageInput" type="file" accept="image/jpeg,image/png">
+    <input id="imageInput" type="file" accept="image/jpeg">
 </div>
 <div class="">
 
 </div>
-    <!-- 暂不使用这个，改为使用一个专门的项目来做example -->
-    <script type="module" src='dist/iife/index.js'></script>
+<!-- 暂不使用这个，改为使用一个专门的项目来做example -->
+<script src='../dist/index.umd.js'></script>
+
+
+<script>
+    const krt = new KrpanoToolJS()
+    const inputEl = document.getElementById('imageInput')
+    inputEl.onchange = function (e) {
+        const file = e.target.files[0]
+        krt.makeTiles(file).then(res => {
+            console.log(res)
+        })
+        inputEl.value = ''
+    }
+</script>
 </body>
 
 </html>

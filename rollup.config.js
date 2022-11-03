@@ -22,9 +22,9 @@ if (process.env.TARGET === 'debug') {
     config.push({
         input: [path.resolve(__dirname, pkg.entry)],
         output: {
-            file: path.resolve(__dirname, pkg.iife),
+            file: path.resolve(__dirname, pkg.umd),
             format: 'umd',
-            name: moduleName,
+            name: 'KrpanoToolJS',
             sourcemap: true,
         },
         plugins: [
@@ -34,10 +34,21 @@ if (process.env.TARGET === 'debug') {
                 preferBuiltins: true,
             }),
             commonjs(),
-            workerLoader(),
             typescript({
                 typescript: require('typescript'),
                 cacheRoot: path.resolve(__dirname, '.rts2_cache'),
+            }),
+            workerLoader(),
+            babel({
+                babelHelpers: 'runtime',
+                exclude: [
+                    'node_modules/**',
+                    'src/modules/panoToCube/panoToCubeWorker.js'
+                ],
+                extensions: [
+                    ...DEFAULT_EXTENSIONS,
+                    '.ts',
+                ],
             }),
             liveServer({
                 port: 8990,
@@ -67,7 +78,8 @@ if (process.env.TARGET === 'debug') {
             },
             // umd
             {
-                name: 'KrpanoTool',
+                name: 'KrpanoToolJS',
+                format: 'umd',
                 file: path.resolve(__dirname, pkg['umd'])
             },
             // iife

@@ -156,7 +156,6 @@ const orientations = {
 function renderFace({data: readData, face, rotation = 0, interpolation = 'cubic', maxWidth = Infinity}) {
 
     const faceWidth = Math.min(maxWidth, readData.width / 2);
-    // const faceWidth = Math.min(maxWidth, 2048)
     const faceHeight = faceWidth
     const cube = {}
     const orientation = orientations[face]

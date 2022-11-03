@@ -61,13 +61,14 @@ export default class MakeTiles {
             img.src = URL.createObjectURL(this.imageFile)
             img.onload = () => {
                 const canvas = document.createElement('canvas') as HTMLCanvasElement
-                const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+                const ctx = canvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
                 const {width, height} = img
                 this.imageWidth = width
                 this.imageHeight = height
                 ctx.drawImage(img, 0, 0)
                 this.imageData = ctx.getImageData(0, 0, width, height)
                 this.analyzeImageLevel(this.panoWidth)
+                canvas.remove()
                 resolve()
             }
         })
@@ -158,7 +159,7 @@ export default class MakeTiles {
 
     public generate(): TTilesList {
         const tempCanvas = document.createElement('canvas') as HTMLCanvasElement
-        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D
+        const tempCtx = tempCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
 
         this.levelConfig.forEach(level => {
             const rows: number = Math.ceil(level.size / this.maxTileSize)
@@ -179,7 +180,7 @@ export default class MakeTiles {
                     const lastColFlat = lastColHeight && col === cols - 1
 
                     const tilesCanvas = document.createElement('canvas') as HTMLCanvasElement
-                    const tilesCtx = tilesCanvas.getContext('2d') as CanvasRenderingContext2D
+                    const tilesCtx = tilesCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
                     const sx = row * this.maxTileSize
                     const sy = col * this.maxTileSize
                     const sw = lastRowFlat ? lastRowWdith : this.maxTileSize
@@ -205,10 +206,12 @@ export default class MakeTiles {
                         path: folderPath + tileFileName,
                         base64: tilesCanvas.toDataURL('image/jpeg', '0.92'),
                     })
+                    tilesCanvas.remove()
                 }
             }
         })
 
+        tempCanvas.remove()
         return this.tiles
     }
 
@@ -222,7 +225,7 @@ export default class MakeTiles {
 
     public generateThumb(width = 240, height = 240) {
         const canvas = document.createElement('canvas') as HTMLCanvasElement
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+        const ctx = canvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
         canvas.width = this.imageWidth
         canvas.height = this.imageHeight
         ctx.putImageData(this.imageData, 0, 0)
@@ -230,7 +233,7 @@ export default class MakeTiles {
         ctx.drawImage(canvas, 0, 0)
 
         const tempCavans = document.createElement('canvas') as HTMLCanvasElement
-        const tempCtx = tempCavans.getContext('2d') as CanvasRenderingContext2D
+        const tempCtx = tempCavans.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
         tempCavans.width = width
         tempCavans.height = height
         tempCtx.putImageData(ctx.getImageData(0, 0, width, height), 0, 0)
