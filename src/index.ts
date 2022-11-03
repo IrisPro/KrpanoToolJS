@@ -55,7 +55,7 @@ export default class KrpanoToolJS {
                 }
             }
             const panoToCube = new PanoToCube(file)
-            panoToCube.genCubeDatasAsync().then(async data => {
+            panoToCube.genCubeDatasAsync(type).then(async data => {
 
                 // 生成预览图：preview.jpg
                 folder.file('preview.jpg', removeBase64Header(panoToCube.generatePreviewImage()), {base64: true})
@@ -127,7 +127,7 @@ export default class KrpanoToolJS {
                             result.duration = getTimeDifference(startTime, new Date())
                             resolve(result)
                         })
-                }, 20)
+                }, 0)
             })
         })
     }

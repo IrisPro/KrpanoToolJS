@@ -155,7 +155,7 @@ const orientations = {
 
 function renderFace({data: readData, face, rotation = 0, interpolation = 'cubic', maxWidth = Infinity}) {
 
-    const faceWidth = Math.min(maxWidth, readData.width / 2);
+    const faceWidth = Math.min(maxWidth, parseInt(readData.width / 3));
     const faceHeight = faceWidth
     const cube = {}
     const orientation = orientations[face]
@@ -188,11 +188,9 @@ function renderFace({data: readData, face, rotation = 0, interpolation = 'cubic'
         }
     }
 
-    // console.log('worker_before_postMessage')
     postMessage(writeData)
 }
 
 onmessage = function ({data}) {
-    // console.log('worker_receive——onmessage', data)
     renderFace(data)
 }

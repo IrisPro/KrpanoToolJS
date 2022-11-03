@@ -1,6 +1,7 @@
 import PanoToCubeWorker from 'web-worker:./panoToCubeWorker.js'
 import {gaussBlur, scaleImageData} from '../../utils/utils'
 import {imageQuality, mimeType} from '../../utils/constant'
+import {ESplitImageType} from '../../@types'
 
 export interface IFaceData {
     name: string;
@@ -26,14 +27,17 @@ export default class PanoToCube {
 
     public faceDatas: IFaceData[] = []
     public callbackFunc: Function | undefined
+    private type: ESplitImageType
 
     constructor(imageFile?: File) {
         this.imageFile = imageFile
     }
 
-    public genCubeDatasAsync(): Promise<IFaceData[]> {
+    public genCubeDatasAsync(type: ESplitImageType): Promise<IFaceData[]> {
         return new Promise((resolve, reject) => {
             if (!this.imageFile) reject()
+
+            this.type = type
 
             this.callbackFunc = resolve
             const img = new Image()
@@ -75,6 +79,7 @@ export default class PanoToCube {
         const options = {
             data: data,
             face: faceName,
+            maxWidth: this.type === ESplitImageType.cube ? 2048 : Infinity
         }
 
         const worker = new PanoToCubeWorker()
