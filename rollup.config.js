@@ -15,7 +15,7 @@ const extensions = [
     '.js', '.jsx', '.ts', '.tsx',
 ];
 
-const moduleName = pkg.name.split('/').pop().replace(/-/g, '');
+const moduleName = 'KrpanoToolJS'
 const config = [];
 
 if (process.env.TARGET === 'debug') {
@@ -24,7 +24,7 @@ if (process.env.TARGET === 'debug') {
         output: {
             file: path.resolve(__dirname, pkg.umd),
             format: 'umd',
-            name: 'KrpanoToolJS',
+            name: moduleName,
             sourcemap: true,
         },
         plugins: [
@@ -62,29 +62,30 @@ if (process.env.TARGET === 'debug') {
         ],
     });
 } else {
-    /* ESNext */
     config.push({
         input: [path.resolve(__dirname, pkg.entry)],
         output: [
             // esm
             {
                 file: path.resolve(__dirname, pkg['module']),
+                name: moduleName,
                 format: 'es',
             },
             // cjs
             {
                 file: path.resolve(__dirname, pkg['main']),
+                name: moduleName,
                 format: 'cjs',
             },
             // umd
             {
-                name: 'KrpanoToolJS',
+                name: moduleName,
                 format: 'umd',
                 file: path.resolve(__dirname, pkg['umd'])
             },
             // iife
             {
-                name: 'KrpanoTool',
+                name: moduleName,
                 file: path.resolve(__dirname, pkg['iife'])
             }
         ],
