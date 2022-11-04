@@ -193,3 +193,4 @@ export default class KrpanoToolJS {
     }
 }
 
+window['KrpanoTool'] = KrpanoToolJS

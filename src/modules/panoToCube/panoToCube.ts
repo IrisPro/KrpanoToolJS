@@ -64,15 +64,19 @@ export default class PanoToCube {
             u: {x: 1, y: 0},
             d: {x: 1, y: 2}
         }
-        for (const worker of this.workers) {
-            worker.terminate()
-        }
+
+        this.cleanWorkers()
 
         for (const [faceName] of Object.entries(facePositions)) {
             this.renderFace(data, faceName)
         }
     }
 
+    cleanWorkers() {
+        for (const worker of this.workers) {
+            worker.terminate()
+        }
+    }
 
     renderFace(data: ImageData, faceName: string) {
 
@@ -94,6 +98,7 @@ export default class PanoToCube {
                 data: inputData,
             })
 
+            worker.terminate()
             if (this.finishedCount === 6) {
                 this.callbackFunc && this.callbackFunc(this.faceDatas)
             }

@@ -15,7 +15,7 @@ const extensions = [
     '.js', '.jsx', '.ts', '.tsx',
 ];
 
-const moduleName = 'KrpanoToolJS'
+const moduleName = 'KrpanoTool'
 const config = [];
 
 if (process.env.TARGET === 'debug') {

@@ -9,5 +9,6 @@ test/
 .editorconfig
 .eslintignore
 .eslintrc.js
+rollup.config.js
 
 
