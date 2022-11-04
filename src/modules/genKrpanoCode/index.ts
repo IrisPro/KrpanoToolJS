@@ -57,6 +57,8 @@ export function getCubeXml(dirName: string) {
  * @param levelConfig 瓦片图层级配置
  */
 export function getTilesXml(dirName: string, isShort: boolean = false, levelConfig?: ILevelConfig[]): string {
+    const V = formatNum('v', levelConfig)
+    const H = formatNum('h', levelConfig)
     let xml = ''
     if (isShort) {
         const multires = [512]
@@ -65,16 +67,22 @@ export function getTilesXml(dirName: string, isShort: boolean = false, levelConf
             multires.push(level.size)
         })
         xml = `<image>
-                  <cube url="panos/${dirName}/%s/l%l/%v/l%l_%s_%v_%h.jpg" multires="${multires.toString()}" />
+                  <cube url="panos/${dirName}/%s/l%l/%${V}/l%l_%s_%${V}_%${H}.jpg" multires="${multires.toString()}" />
                </image>`
     } else {
         xml = ` <image multires="true" tilesize="512" type="CUBE">`
         levelConfig && levelConfig.forEach(level => {
             xml += ` <level tiledimageheight="${level.size}" tiledimagewidth="${level.size}">
-                        <cube url="panos/${dirName}/%s/l${level.level}/%v/l${level.level}_%s_%v_%h.jpg" />
+                        <cube url="panos/${dirName}/%s/l${level.level}/%${V}/l${level.level}_%s_%${V}_%${H}.jpg" />
                     </level>`
         })
         xml += `</image>`
     }
     return xml
+}
+
+function formatNum(str: string, levelConfig): string {
+    const maxTileSize = 512
+    const max: number = Math.ceil(levelConfig[0].size / maxTileSize)
+    return max >= 10 ? `0${str}` : str
 }
