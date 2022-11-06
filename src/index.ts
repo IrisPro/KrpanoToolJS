@@ -76,7 +76,6 @@ export default class KrpanoToolJS {
                     data.forEach(face => {
                         const params: IOptions = {
                             inputData: face.data,
-                            type: EInputDataType.imageData,
                             imageWidth: face.data.width,
                             imageHeight: face.data.height,
                             panoWidth: panoToCube.imageWidth,

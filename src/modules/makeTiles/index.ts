@@ -5,7 +5,7 @@ export enum EInputDataType {
 
 export interface IOptions {
     inputData: ImageData | File;
-    type: EInputDataType;
+    type?: EInputDataType;
     imageWidth: number;
     imageHeight: number;
     panoWidth: number;
@@ -29,51 +29,24 @@ export default class MakeTiles {
     public levelConfig: ILevelConfig[] = []
     readonly maxTileSize = 512
 
-    private imageFile: File | undefined
     private imageData: ImageData
     private panoWidth: number = 0
     private imageWidth: number = 0
     private imageHeight: number = 0
     private faceName: string
-    private format: string = 'jpg'
-    private inputDataType: EInputDataType = EInputDataType.imageData
 
     // save the cut tile image
     public tiles: TTilesList = []
 
     constructor(options: IOptions) {
-        this.inputDataType = options.type
-        this.faceName = options.faceName
-        this.panoWidth = options.panoWidth
-        if (options.type === EInputDataType.file) {
-            this.imageFile = options.inputData as File
-        } else {
-            this.imageData = options.inputData as ImageData
-            this.imageWidth = options.imageWidth
-            this.imageHeight = options.imageHeight
-            this.analyzeImageLevel(this.panoWidth)
-        }
+        const {faceName, panoWidth, inputData, imageWidth, imageHeight} = options
+        this.faceName = faceName
+        this.panoWidth = panoWidth
+        this.imageData = inputData as ImageData
+        this.imageWidth = imageWidth
+        this.imageHeight = imageHeight
+        this.analyzeImageLevel(this.panoWidth)
     }
-
-    private loadImage() {
-        return new Promise(resolve => {
-            const img = new Image()
-            img.src = URL.createObjectURL(this.imageFile)
-            img.onload = () => {
-                const canvas = document.createElement('canvas') as HTMLCanvasElement
-                const ctx = canvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
-                const {width, height} = img
-                this.imageWidth = width
-                this.imageHeight = height
-                ctx.drawImage(img, 0, 0)
-                this.imageData = ctx.getImageData(0, 0, width, height)
-                this.analyzeImageLevel(this.panoWidth)
-                canvas.remove()
-                resolve()
-            }
-        })
-    }
-
 
     private analyzeImageLevel(panoWidth: number) {
 
@@ -142,18 +115,11 @@ export default class MakeTiles {
         }
 
         this.levelConfig = getLevelConfig(panoWidth)
-
     }
 
     public generateAsync(): Promise<TTilesList> {
         return new Promise(resolve => {
-            if (this.inputDataType === EInputDataType.file) {
-                this.loadImage().then(() => {
-                    resolve(this.generate())
-                })
-            } else {
-                resolve(this.generate())
-            }
+            resolve(this.generate())
         })
     }
 
@@ -161,11 +127,14 @@ export default class MakeTiles {
         const tempCanvas = document.createElement('canvas') as HTMLCanvasElement
         const tempCtx = tempCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
 
+        const tilesCanvas = document.createElement('canvas') as HTMLCanvasElement
+        const tilesCtx = tilesCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
+
         this.levelConfig.forEach(level => {
             const rows: number = Math.ceil(level.size / this.maxTileSize)
             const cols: number = rows
-            const lastRowWdith = level.size % this.maxTileSize
-            const lastColHeight = lastRowWdith
+            const lastRowWidth = level.size % this.maxTileSize
+            const lastColHeight = lastRowWidth
 
             tempCanvas.width = this.imageData.width
             tempCanvas.height = this.imageData.height
@@ -176,14 +145,12 @@ export default class MakeTiles {
             for (let col = 0; col < cols; col++) {
                 for (let row = 0; row < rows; row++) {
 
-                    const lastRowFlat = lastRowWdith && row === rows - 1
+                    const lastRowFlat = lastRowWidth && row === rows - 1
                     const lastColFlat = lastColHeight && col === cols - 1
 
-                    const tilesCanvas = document.createElement('canvas') as HTMLCanvasElement
-                    const tilesCtx = tilesCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
                     const sx = row * this.maxTileSize
                     const sy = col * this.maxTileSize
-                    const sw = lastRowFlat ? lastRowWdith : this.maxTileSize
+                    const sw = lastRowFlat ? lastRowWidth : this.maxTileSize
                     const sh = lastColFlat ? lastColHeight : this.maxTileSize
                     const imageData = tempCtx.getImageData(sx, sy, sw, sh)
                     tilesCanvas.width = sw
@@ -206,20 +173,18 @@ export default class MakeTiles {
                         path: folderPath + tileFileName,
                         base64: tilesCanvas.toDataURL('image/jpeg', '0.92'),
                     })
-                    tilesCanvas.remove()
                 }
             }
         })
 
+        tilesCanvas.remove()
         tempCanvas.remove()
         return this.tiles
     }
 
     public generateThumbAsync(width = 240, height = 240) {
         return new Promise(resolve => {
-            this.loadImage().then(() => {
-                resolve(this.generateThumb(width, height))
-            })
+            resolve(this.generateThumb(width, height))
         })
     }
 

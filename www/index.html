@@ -11,6 +11,11 @@
     <span style="color: #FFFFFF">上传全景图</span>
     <input id="imageInput" type="file" accept="image/jpeg">
 </div>
+
+<div>
+    <button id="btn-test" style="width: 80px;height: 36px" onclick="btnClick()">test</button>
+</div>
+
 <div class="">
 
 </div>
@@ -27,6 +32,14 @@
             console.log(res)
         })
         inputEl.value = ''
+    }
+
+    function btnClick() {
+        const color_r = parseInt(Math.random() * 255)
+        const color_g = parseInt(Math.random() * 255)
+        const color_b = parseInt(Math.random() * 255)
+        document.body.style.backgroundColor = `rgb(${color_r}, ${color_g}, ${color_b})`
+        console.log('btnClick')
     }
 </script>
 </body>

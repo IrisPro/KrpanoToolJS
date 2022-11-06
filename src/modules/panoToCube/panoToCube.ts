@@ -56,26 +56,11 @@ export default class PanoToCube {
     }
 
     processImage(data: ImageData) {
-        const facePositions = {
-            f: {x: 1, y: 1},
-            b: {x: 3, y: 1},
-            r: {x: 2, y: 1},
-            l: {x: 0, y: 1},
-            u: {x: 1, y: 0},
-            d: {x: 1, y: 2}
-        }
+        const facePositions = ['f', 'b', 'r', 'l', 'u', 'd']
 
-        this.cleanWorkers()
-
-        for (const [faceName] of Object.entries(facePositions)) {
+        facePositions.forEach(faceName => {
             this.renderFace(data, faceName)
-        }
-    }
-
-    cleanWorkers() {
-        for (const worker of this.workers) {
-            worker.terminate()
-        }
+        })
     }
 
     renderFace(data: ImageData, faceName: string) {
