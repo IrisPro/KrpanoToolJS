@@ -28,7 +28,7 @@
     const inputEl = document.getElementById('imageInput')
     inputEl.onchange = function (e) {
         const file = e.target.files[0]
-        krt.makeTiles(file).then(res => {
+        krt.makeCube(file).then(res => {
             console.log(res)
         })
         inputEl.value = ''

@@ -117,17 +117,13 @@ export default class PanoToCube {
      * 生成缩略
      * @param faceName 某一面
      * @param size 图片大小
-     * @param isBlur 模糊
      */
-    generateThumb(faceName: string = 'f', size: number = 240, isBlur: boolean = true) {
+    generateThumb(faceName: string = 'f', size: number = 400) {
         const canvas = document.createElement('canvas') as HTMLCanvasElement
         const ctx = canvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
         canvas.width = size
         canvas.height = size
-        let imageData = scaleImageData(this.faceDatas.find(item => item.name === faceName).data, size, size)
-        if (isBlur) {
-            imageData = gaussBlur(imageData, 1)
-        }
+        const imageData = scaleImageData(this.faceDatas.find(item => item.name === faceName).data, size, size)
         ctx.putImageData(imageData, 0, 0)
 
         const imageUrl = canvas.toDataURL(mimeType.jpg, imageQuality)

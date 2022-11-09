@@ -1,7 +1,7 @@
 import JSZip from 'jszip'
 
 import PanoToCube, {ICubeImage} from './modules/panoToCube/panoToCube'
-import MakeTiles, {EInputDataType, ILevelConfig, IOptions, TTilesList} from './modules/makeTiles'
+import MakeTiles, {ILevelConfig, IOptions, TTilesList} from './modules/makeTiles'
 import {getTimeDifference, getUniqueId, removeBase64Header} from './utils/utils'
 import {EImageType, getImageXml, getSceneXml} from './modules/genKrpanoCode'
 import {ESplitImageType, IConvertPanoResult} from './@types'
@@ -13,7 +13,7 @@ import {ESplitImageType, IConvertPanoResult} from './@types'
 export default class KrpanoToolJS {
 
     constructor() {
-        console.log('constructor KrpanoJSTool')
+        console.log('Welcome to KrpanoJSTool，https://github.com/IrisPro/KrpanoToolJS')
     }
 
     [key: string]: Function
@@ -54,20 +54,22 @@ export default class KrpanoToolJS {
                     shortTileImage: '',
                 }
             }
+            const zipBase64Option = {base64: true}
+
             const panoToCube = new PanoToCube(file)
             panoToCube.genCubeDatasAsync(type).then(async data => {
 
                 // 生成预览图：preview.jpg
-                folder.file('preview.jpg', removeBase64Header(panoToCube.generatePreviewImage()), {base64: true})
+                folder.file('preview.jpg', removeBase64Header(panoToCube.generatePreviewImage()), zipBase64Option)
 
                 // 生成缩略图：thumb.jpg
-                folder.file('thumb.jpg', removeBase64Header(panoToCube.generateThumb()), {base64: true})
+                folder.file('thumb.jpg', removeBase64Header(panoToCube.generateThumb()), zipBase64Option)
 
                 // 生成 cube图片
                 if (type === ESplitImageType.cube || type === ESplitImageType.all) {
                     const cubes: ICubeImage[] = panoToCube.genCubeImages()
                     cubes.forEach(cube => {
-                        folder.file(`pano_${cube.name}.jpg`, removeBase64Header(cube.url), {base64: true})
+                        folder.file(`pano_${cube.name}.jpg`, removeBase64Header(cube.url), zipBase64Option)
                     })
                 }
 
@@ -88,7 +90,7 @@ export default class KrpanoToolJS {
                             tilesLevelConfig = makeTileTool.levelConfig
                         }
                         tiles.forEach(itemTile => {
-                            folder.file(itemTile.path, removeBase64Header(itemTile.base64), {base64: true})
+                            folder.file(itemTile.path, removeBase64Header(itemTile.base64), zipBase64Option)
                         })
                     })
                 }
@@ -184,6 +186,7 @@ export default class KrpanoToolJS {
     public tilesToCube() {
         console.log('敬请期待-tilesToCube')
     }
+
     /**
      * 立方体图转为全景图（敬请期待）
      */
