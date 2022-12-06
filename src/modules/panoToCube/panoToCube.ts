@@ -1,5 +1,5 @@
 import PanoToCubeWorker from 'web-worker:./panoToCubeWorker.js'
-import {gaussBlur, scaleImageData} from '../../utils/utils'
+import {gaussBlur, scaleImageData, isWin, isMac} from '../../utils/utils'
 import {imageQuality, mimeType} from '../../utils/constant'
 import {ESplitImageType} from '../../@types'
 
@@ -17,16 +17,17 @@ export default class PanoToCube {
     private imageFile: File | undefined
     public canvas: HTMLCanvasElement = document.createElement('canvas')
     private ctx = this.canvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D
-    private workers: Worker[] = []
     private finishedCount: number = 0
     static interpolation = {
         linear: 'linear', // 更柔和的细节
         cubic: 'cubic', // 更清晰的细节
         lanczos: 'lanczos', // lanczos算法，质量最好，速度最慢
     }
-
+    private facePositions: string[] = ['f', 'b', 'r', 'l', 'u', 'd']
+    private tempFacePositions = []
     public faceDatas: IFaceData[] = []
-    public callbackFunc: Function | undefined
+    public cbResolve: Function | undefined
+    public cbReject: Function | undefined
     private type: ESplitImageType
 
     constructor(imageFile?: File) {
@@ -38,8 +39,12 @@ export default class PanoToCube {
             if (!this.imageFile) reject()
 
             this.type = type
+            this.cbResolve = resolve
+            this.cbReject = reject
 
-            this.callbackFunc = resolve
+            // Limit the maximum size on the windows
+            const winLinitSize = 10100
+
             const img = new Image()
             img.src = URL.createObjectURL(this.imageFile)
 
@@ -47,23 +52,46 @@ export default class PanoToCube {
                 const {width, height} = img
                 this.canvas.width = width
                 this.canvas.height = height
+                if (isWin() && width > winLinitSize) {
+                    img?.remove()
+                    reject(false)
+                    return
+                }
                 this.ctx.drawImage(img, 0, 0)
                 const data = this.ctx.getImageData(0, 0, width, height)
-
                 this.processImage(data)
             })
         })
     }
 
     processImage(data: ImageData) {
-        const facePositions = ['f', 'b', 'r', 'l', 'u', 'd']
-
-        facePositions.forEach(faceName => {
-            this.renderFace(data, faceName)
+        this.facePositions.forEach(name => {
+            this.tempFacePositions.push({
+                name,
+                isRendering: false,
+            })
         })
+        if (isMac()) {
+            this.facePositions.forEach((faceName, index) => {
+                this.renderFace(data, index)
+            })
+        } else {
+            // Limit the maximum thread on the window
+            this.renderFace(data, 0)
+            this.renderFace(data, 3)
+        }
     }
 
-    renderFace(data: ImageData, faceName: string) {
+    renderFace(data: ImageData, faceIndex: number) {
+        if (faceIndex > this.tempFacePositions.length - 1 || this.tempFacePositions.length === 0) {
+            return
+        }
+        const currentFace = this.tempFacePositions[faceIndex]
+
+        if (currentFace.isRendering) return
+
+        const faceName = currentFace.name
+        currentFace.isRendering = true
 
         const options = {
             data: data,
@@ -72,11 +100,20 @@ export default class PanoToCube {
         }
 
         const worker = new PanoToCubeWorker()
-        this.workers.push(worker)
 
-        worker.postMessage(options)
+        try {
+            worker.postMessage(options)
+        } catch (e) {
+            data = null
+            this.cbReject(false)
+        }
 
         worker.onmessage = ({data: inputData}) => {
+            if (inputData === 'renderingFailed') {
+                data = null
+                this.cbReject(false)
+                return
+            }
             this.finishedCount++
             this.faceDatas.push({
                 name: faceName,
@@ -85,7 +122,11 @@ export default class PanoToCube {
 
             worker.terminate()
             if (this.finishedCount === 6) {
-                this.callbackFunc && this.callbackFunc(this.faceDatas)
+                this.cbResolve && this.cbResolve(this.faceDatas)
+            } else {
+                if (isWin()) {
+                    this.renderFace(data, ++faceIndex)
+                }
             }
         }
     }

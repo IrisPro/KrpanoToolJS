@@ -155,3 +155,15 @@ export function getUniqueId(length: number = 36): string {
     }
     return length >= 36 ? str : str.substring(str.length - length, str.length)
 }
+
+export function isMac() {
+    return /macintosh|mac os x/i.test(navigator.userAgent.toLowerCase())
+}
+
+export function isWin() {
+    const agent = navigator.userAgent.toLowerCase()
+    return agent.indexOf("win32") >= 0
+        || agent.indexOf("wow32") >= 0
+        || agent.indexOf("win64") >= 0
+        || agent.indexOf("wow64") >= 0
+}

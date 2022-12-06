@@ -40,7 +40,7 @@ export default class KrpanoToolJS {
 
         const startTime = new Date()
 
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const zip = new JSZip()
             const folder = zip.folder(`${dirName}`) as JSZip
             const result: IConvertPanoResult = {
@@ -129,6 +129,8 @@ export default class KrpanoToolJS {
                             resolve(result)
                         })
                 }, 0)
+            }).catch(e => {
+                reject(e)
             })
         })
     }

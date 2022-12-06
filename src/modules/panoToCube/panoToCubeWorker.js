@@ -194,5 +194,9 @@ function renderFace({data: readData, face, rotation = 0, interpolation = 'cubic'
 }
 
 onmessage = function ({data}) {
-    renderFace(data)
+    if (data) {
+        renderFace(data)
+    } else {
+        postMessage('renderingFailed')
+    }
 }
