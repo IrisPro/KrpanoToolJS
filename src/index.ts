@@ -29,8 +29,8 @@ export default class KrpanoToolJS {
         let tilesLevelConfig: ILevelConfig[]
 
         /**
-         * 1、单个场景文件夹名称：文件名转为拼音 + '_' + 随机数
-         * 2、krpano不支持大写，统一转为小写
+         * 1、单个场景文件夹名称：'pano_' + 8位随机数
+         * 2、krpano不支持大写，统一使用小写
          */
         const pinyinName = 'pano_' + getUniqueId(8)
 

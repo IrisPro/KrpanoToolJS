@@ -108,7 +108,6 @@ export function gaussBlur(imgData: ImageData, sigma: number = 1.8): ImageData {
             pixes[i] = r / gaussSum
             pixes[i + 1] = g / gaussSum
             pixes[i + 2] = b / gaussSum
-            // pixes[i + 3] = a ;
         }
     }
     //y 方向一维高斯运算
@@ -123,7 +122,6 @@ export function gaussBlur(imgData: ImageData, sigma: number = 1.8): ImageData {
                     r += pixes[i] * gaussMatrix[j + radius]
                     g += pixes[i + 1] * gaussMatrix[j + radius]
                     b += pixes[i + 2] * gaussMatrix[j + radius]
-                    // a += pixes[i + 3] * gaussMatrix[j];
                     gaussSum += gaussMatrix[j + radius]
                 }
             }
@@ -136,24 +134,18 @@ export function gaussBlur(imgData: ImageData, sigma: number = 1.8): ImageData {
     return imgData
 }
 
-const mimeType = {
-    'jpg': 'image/jpeg',
-    'png': 'image/png'
-}
-
 /**
- * 创建唯一id
+ * 获取随机字符串
  * @param length 字符串长度
  */
-export function getUniqueId(length: number = 36): string {
-    const temp = '0123456789abcdefghijklmnopqrstuvwsyz'
-    const d = new Date()
-    let str = d.getTime().toString()
-    for (let i = 0; i < 5; i++) {
-        const index = Math.round(Math.random() * 36)
-        str += temp[index]
+export function getUniqueId(length: number = 8) {
+    const str = '0123456789abcdefghijklmnopqrstuvwxyz'
+    let result = ''
+    for (let i = 0; i < length; i++) {
+        const id = Math.floor(Math.random() * str.length)
+        result += str[id]
     }
-    return length >= 36 ? str : str.substring(str.length - length, str.length)
+    return result || Math.random().toString(36).substr(2,8)
 }
 
 export function isMac() {
