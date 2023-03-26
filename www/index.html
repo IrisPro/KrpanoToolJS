@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>KrpanoJSTool</title>
     <link rel="stylesheet" href="style.css">
+    <script type='text/javascript' src='../dist/index.iife.js'></script>
 </head>
 
 <body>
@@ -11,19 +12,10 @@
     <span style="color: #FFFFFF">上传全景图</span>
     <input id="imageInput" type="file" accept="image/jpeg">
 </div>
-
-<div>
-    <button id="btn-test" style="width: 80px;height: 36px" onclick="btnClick()">test</button>
-</div>
-
-<div class="">
-
-</div>
-<!-- 暂不使用这个，改为使用一个专门的项目来做example -->
-<script src='../dist/index.umd.js'></script>
+<div style="color: aquamarine">(代码内自行调节,一般不建议超过2万像素.windows性能较差时,会导致失败.)图片限制:Mac 20000x10000, win: 15000x7500</div>
 
 
-<script>
+<script type='text/javascript'>
     const krt = new KrpanoTool()
     const inputEl = document.getElementById('imageInput')
     inputEl.onchange = function (e) {
@@ -31,18 +23,21 @@
         krt.makeCube(file).then(res => {
             console.log('done')
             console.log(res)
+            downloadFile(res.content)
         }).catch(e => {
             console.log('failed', e)
         })
         inputEl.value = ''
     }
 
-    function btnClick() {
-        const color_r = parseInt(Math.random() * 255)
-        const color_g = parseInt(Math.random() * 255)
-        const color_b = parseInt(Math.random() * 255)
-        document.body.style.backgroundColor = `rgb(${color_r}, ${color_g}, ${color_b})`
-        console.log('btnClick')
+    function downloadFile(blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = '全景图';
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 </body>

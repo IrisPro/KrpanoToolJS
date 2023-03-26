@@ -43,7 +43,7 @@ export default class PanoToCube {
             this.cbReject = reject
 
             // Limit the maximum size on the windows
-            const winLinitSize = 10100
+            const winLinitSize = 15000
 
             const img = new Image()
             img.src = URL.createObjectURL(this.imageFile)
@@ -54,7 +54,7 @@ export default class PanoToCube {
                 this.canvas.height = height
                 if (isWin() && width > winLinitSize) {
                     img?.remove()
-                    reject(false)
+                    reject('windows限制了大小15000以下')
                     return
                 }
                 this.ctx.drawImage(img, 0, 0)
@@ -78,11 +78,11 @@ export default class PanoToCube {
         } else {
             // Limit the maximum thread on the window
             this.renderFace(data, 0)
-            this.renderFace(data, 3)
         }
     }
 
     renderFace(data: ImageData, faceIndex: number) {
+        console.log('单线程切图')
         if (faceIndex > this.tempFacePositions.length - 1 || this.tempFacePositions.length === 0) {
             return
         }
@@ -105,13 +105,13 @@ export default class PanoToCube {
             worker.postMessage(options)
         } catch (e) {
             data = null
-            this.cbReject(false)
+            this.cbReject(e)
         }
 
         worker.onmessage = ({data: inputData}) => {
             if (inputData === 'renderingFailed') {
                 data = null
-                this.cbReject(false)
+                this.cbReject('renderingFailed')
                 return
             }
             this.finishedCount++

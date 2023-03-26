@@ -22,8 +22,8 @@ if (process.env.TARGET === 'debug') {
     config.push({
         input: [path.resolve(__dirname, pkg.entry)],
         output: {
-            file: path.resolve(__dirname, pkg.umd),
-            format: 'umd',
+            file: path.resolve(__dirname, pkg.iife),
+            format: 'iife',
             name: moduleName,
             sourcemap: true,
         },
@@ -55,7 +55,7 @@ if (process.env.TARGET === 'debug') {
                 host: '0.0.0.0',
                 root: 'www',
                 file: 'index.html',
-                mount: [['/dist/iife', './dist/iife']],
+                mount: [['/dist', './dist']],
                 open: false,
                 wait: 500,
             }),
