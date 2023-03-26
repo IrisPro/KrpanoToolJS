@@ -55,7 +55,7 @@ if (process.env.TARGET === 'debug') {
                 host: '0.0.0.0',
                 root: 'www',
                 file: 'index.html',
-                mount: [['/dist/iife', './dist/iife']],
+                mount: [['/dist', './dist']],
                 open: false,
                 wait: 500,
             }),
