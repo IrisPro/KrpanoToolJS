@@ -98,6 +98,20 @@ makeTiles(file: File): Promise<IConvertPanoResult>;
 makeCubeAndTiles(file: File): Promise<IConvertPanoResult>;
 ```
 
+### Q&A
+1. 使用webpack5打包会报一个警告
+   在webpack.config.js中加入如下代码：
+```js
+module.exports = {
+  resolve: {
+    //  跳过worker_threads的检查
+    fallback: {
+      "worker_threads": false,
+    }
+  }
+}
+```
+
 ## 三、还原全景图（敬请期待）
 
 1. 在浏览器爬取图片

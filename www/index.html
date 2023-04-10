@@ -22,7 +22,7 @@
     inputEl.onchange = function (e) {
         const file = e.target.files[0]
         tipEl.innerText = 'loading...'
-        krt.makeCube(file).then(res => {
+        krt.makeTiles(file).then(res => {
             tipEl.innerText = 'finished...'
             console.log('done')
             console.log(res)

@@ -71,7 +71,7 @@ export default class MakeTiles {
                 //  最后一行瓦片的余数（对64取余）
                 const minRemainder = lastTileSize % minTileSize
                 if (minRemainder !== 0) {
-                    inputLevelSize = inputLevelSize - (minTileSize - minRemainder)
+                    inputLevelSize = inputLevelSize - minRemainder
                 }
             }
             return inputLevelSize
@@ -81,7 +81,7 @@ export default class MakeTiles {
             let count = 1
             let levels = []
             const minFaceSize = 640
-            const topLevelSize = panoSize / coefficient
+            const topLevelSize = Math.floor(panoSize / coefficient)
 
             // 最高层
             levels.push({
