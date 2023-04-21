@@ -18,7 +18,7 @@ export function getSceneXml(params: any): string {
     const {title, dirName, sceneName, type, levelConfig} = params
     let xml = `<scene name="${sceneName}" title="${title}" onstart="" thumburl="panos/${dirName}/thumb.jpg" lat="" lng="" heading="">
 
-                <view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+                <view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="100" maxpixelzoom="2.0" fovmin="90" fovmax="120" limitview="auto" />
 
                 <preview url="panos/${dirName}/preview.jpg" />`
 

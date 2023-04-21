@@ -1,6 +1,6 @@
 {
     "name": "@krpano/js-tools",
-    "version": "1.1.17",
+    "version": "1.1.18",
     "description": "在浏览器切图和还原全景图，KrpanoTools的轻量替代品",
     "author": "Rain",
     "license": "MIT",
